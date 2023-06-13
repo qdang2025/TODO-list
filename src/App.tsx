@@ -5,6 +5,8 @@ import { TodoForm } from './components/TodoForm';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoList } from './components/TodoList';
 import { TodoDesc } from './components/TodoDesc';
+import { fetchTodos, addTodo, deleteTodo } from './API/api';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 function App() {
-
+  // const queryClient = useQueryClient();
+  // const {data, isLoading} = useQuery<Todo[], Error>('todos', fetchTodos);
   const classes = useStyles();
 
   const [todos, setTodos] = useState<Todo[]>([]);
