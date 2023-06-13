@@ -89,7 +89,7 @@ function App() {
           <TodoList todos={todos} handleToggleStatus={handleToggleStatus} handleDeleteTodo={handleDeleteTodo} filter={filter} />
         </div>
       </div>
-    </div>
+      </div>
   );
 }
 

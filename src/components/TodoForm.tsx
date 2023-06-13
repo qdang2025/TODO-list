@@ -1,4 +1,4 @@
-import { TextField, IconButton, makeStyles, Box } from '@material-ui/core';
+import { TextField, IconButton, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
