@@ -5,15 +5,15 @@ import { TodoForm } from './components/TodoForm';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoList } from './components/TodoList';
 import { TodoDesc } from './components/TodoDesc';
-import { fetchTodos, addTodo, deleteTodo } from './API/api';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { getTodos, addTodo, updateTodo, deleteTodo } from './API/api';
+ import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '100vh',
+    minHeight: '100vh',
   },
   todoListContainer: {
     backgroundColor: '#fef3c7',
@@ -21,55 +21,62 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     width: '100%',
     maxWidth: 360,
-    overflowY: 'auto',
     minHeight: '70vh',
+    overflow: 'auto', // will allow the container to scroll when content overflows
     boxShadow: '0 0 10px rgba(0,0,0,0.2)',
   },
 }));
 
 
 function App() {
-  // const queryClient = useQueryClient();
-  // const {data, isLoading} = useQuery<Todo[], Error>('todos', fetchTodos);
   const classes = useStyles();
 
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [input, setInput] = useState<string>("");
   const [filter, setFilter] = useState<string>("All");
 
-  const generateId = (): number => {
-    return Date.now();
+  const queryClient = useQueryClient();
+  const { data: todos = [] } = useQuery("todos", getTodos);
+
+  const mutationAdd = useMutation(addTodo, {
+    onSuccess: () => queryClient.invalidateQueries('todos')
+  });
+
+  const mutationUpdate = useMutation<Todo, unknown, { id: number, updatedTodo: Todo }, unknown>(
+    ({ id, updatedTodo }) => updateTodo(id, updatedTodo),
+    {
+      onSuccess: () => queryClient.invalidateQueries('todos')
+    }
+  );
+
+  const mutationDelete = useMutation(deleteTodo, {
+    onSuccess: () => queryClient.invalidateQueries('todos')
+  });
+
+  const handleToggleStatus = async (id: number) => {
+    const todo = todos.find((todo: Todo) => todo.id === id);
+    if (todo) {
+      const updatedStatus = todo.status === "completed" ? "incompleted" : "completed";
+      const updatedTodo = { ...todo, status: updatedStatus };
+      console.log("Updated Todo: ", updatedTodo); // For debug
+      mutationUpdate.mutate({ id, updatedTodo });
+    }
   };
 
-  const handleToggleStatus = (id: number) => {
-    setTodos(e =>
-      e.map(todo =>
-        todo.id === id ? { ...todo, status: todo.status === "completed" ? "incompleted" : "completed" } : todo
-      )
-    );
-  };
-
-  const handleAddTodo = () => {
-    // Prevent empty todos
+  const handleAddTodo = async () => {
     if (input === "") {
       return;
     }
-
     const newTodo: Todo = {
-      id: generateId(),
+      id: Math.floor(Math.random() * 1000),
       title: input,
       status: "incompleted"
     };
-
-    setTodos([...todos, newTodo]);
-
-    // Reset input
+    mutationAdd.mutate(newTodo);
     setInput("");
   };
 
   const handleDeleteTodo = (id: number) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
+    mutationDelete.mutate(id);
   };
 
   return (

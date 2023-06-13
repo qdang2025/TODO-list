@@ -1,12 +1,6 @@
-import { ListItem, ListItemText, ListItemSecondaryAction, IconButton, Typography, makeStyles, createTheme, ThemeProvider } from '@material-ui/core';
+import { ListItem, ListItemText, ListItemSecondaryAction, IconButton, Typography, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Todo } from "../types";
-
-const theme = createTheme({
-    typography: {
-        fontFamily: 'Pangolin, cursive !important',
-    },
-});
 
 const useStyles = makeStyles((theme) => ({
     todoCompleted: {
@@ -32,7 +26,6 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, handleToggleStatus, h
     const classes = useStyles();
 
     return (
-        <ThemeProvider theme={theme}>
         <ul>
             {
                 todos.filter((todo) => {
@@ -47,6 +40,7 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, handleToggleStatus, h
                                 variant="body2"
                                 onClick={() => handleToggleStatus(todo.id)}
                                 className={todo.status === "completed" ? classes.todoCompleted : classes.todoNotCompleted}
+                                style={{ fontFamily: 'Pangolin, cursive' }}
                             >
                                 {todo.title}
                             </Typography>
@@ -60,6 +54,5 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, handleToggleStatus, h
                 ))
             }
         </ul>
-        </ThemeProvider>
     );
 };

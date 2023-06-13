@@ -1,20 +1,26 @@
 import axios from 'axios';
 import { Todo } from '../types';
 
-// fetch todos
-export const fetchTodos = async () => {
-    const { data } = await axios.get('https://jsonplaceholder.typicode.com/todos');
-    return data;
-}
+const api = axios.create({
+    baseURL: 'https://648708e7beba6297278fb99b.mockapi.io',
+});
 
-// add a todo
-export const addTodo = async (newTodo : Todo) => {
-    const { data } = await axios.post('https://jsonplaceholder.typicode.com/todos', newTodo);
-    return data;
-}
+export const getTodos = async () => {
+    const response = await api.get('/todos');
+    return response.data;
+};
 
-// delete a todo
-export const deleteTodo = async (id : Number) => {
-    const { data } = await axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`);
-    return data;
-}
+export const addTodo = async (newTodo: Todo) => {
+    const response = await api.post('/todos', newTodo);
+    return response.data;
+};
+
+export const updateTodo = async (todoId: Number, updatedTodo: Todo) => {
+    console.log("API Update Called: ", todoId, updatedTodo); // debug
+    const response = await api.put(`/todos/${todoId}`, updatedTodo);
+    return response.data;
+};
+export const deleteTodo = async (todoId : Number) => {
+    const response = await api.delete(`/todos/${todoId}`);
+    return response.data;
+};

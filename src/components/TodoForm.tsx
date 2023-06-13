@@ -1,4 +1,4 @@
-import { TextField, IconButton, makeStyles } from '@material-ui/core';
+import { TextField, IconButton, makeStyles, Box } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
+    form: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center', // To align items vertically in the center
+        justifyContent: 'center', // To align items horizontally in the center
+    }
 }));
 
 interface TodoFormProps {
@@ -33,7 +39,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ input, handleAddTodo, setInp
     const classes = useStyles();
 
     return (
-        <form>
+        <form className={classes.form}>
             <TextField
                 label="New todo"
                 value={input}
