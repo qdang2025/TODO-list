@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { Todo } from "./types";
 import { makeStyles } from '@material-ui/core/styles';
 import { TodoForm } from './components/TodoForm';
@@ -67,7 +67,7 @@ function App() {
       return;
     }
     const newTodo: Todo = {
-      id: Math.floor(Math.random() * 1000),
+      id: 0, // Mock API ignores the preset value and generates a sequential ID
       title: input,
       status: "incompleted"
     };
