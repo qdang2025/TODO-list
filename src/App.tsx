@@ -75,6 +75,15 @@ function App() {
     setInput("");
   };
 
+  const handleUpdateTodo = async (id: number, newTitle: string) => {
+    const todo = todos.find((todo: Todo) => todo.id === id);
+    if (todo) {
+      const updatedTodo = { ...todo, title: newTitle };
+      console.log("Updated Todo: ", updatedTodo); // For debug
+      mutationUpdate.mutate({ id, updatedTodo });
+    }
+  };
+
   const handleDeleteTodo = (id: number) => {
     mutationDelete.mutate(id);
   };
@@ -86,7 +95,7 @@ function App() {
         <TodoForm input={input} handleAddTodo={handleAddTodo} setInput={setInput} />
         <div className={classes.todoListContainer}>
           <TodoFilter filter={filter} setFilter={setFilter} />
-          <TodoList todos={todos} handleToggleStatus={handleToggleStatus} handleDeleteTodo={handleDeleteTodo} filter={filter} />
+          <TodoList todos={todos} handleToggleStatus={handleToggleStatus} handleDeleteTodo={handleDeleteTodo} handleUpdateTodo={handleUpdateTodo} filter={filter} />
         </div>
       </div>
       </div>

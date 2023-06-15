@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface TodoFormProps {
-    input: string;
+    input: string; // The inputted text
     handleAddTodo: () => void;
     setInput: (value: string) => void;
 }

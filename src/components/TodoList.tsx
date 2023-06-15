@@ -1,6 +1,8 @@
 import { ListItem, ListItemText, ListItemSecondaryAction, IconButton, Typography, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/Update';
 import { Todo } from "../types";
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     todoCompleted: {
@@ -16,14 +18,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface TodoListProps {
-    todos: Todo[];
+    todos: Todo[]; // List of todos
     handleToggleStatus: (id: number) => void;
     handleDeleteTodo: (id: number) => void;
-    filter: string;
+    handleUpdateTodo: (id: number, newTitle: string) => void;
+    filter: string; // 'All' | 'Done' | 'To do'
 }
 
-export const TodoList: React.FC<TodoListProps> = ({ todos, handleToggleStatus, handleDeleteTodo, filter }) => {
+export const TodoList: React.FC<TodoListProps> = ({ todos, handleToggleStatus, handleDeleteTodo, handleUpdateTodo, filter }) => {
     const classes = useStyles();
+
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingTitle, setEditingTitle] = useState<string>("");
 
     return (
         <ul>
@@ -36,16 +42,28 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, handleToggleStatus, h
                 }).map((todo) => (
                     <ListItem key={todo.id} dense button>
                         <ListItemText>
-                            <Typography
-                                variant="body2"
-                                onClick={() => handleToggleStatus(todo.id)}
-                                className={todo.status === "completed" ? classes.todoCompleted : classes.todoNotCompleted}
-                                style={{ fontFamily: 'Pangolin, cursive' }}
-                            >
-                                {todo.title}
-                            </Typography>
+                            {editingId === todo.id ? (
+                                <input
+                                    type="text"
+                                    value={editingTitle}
+                                    onChange={(e) => setEditingTitle(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' ? handleUpdateTodo(todo.id, editingTitle) : null}
+                                />
+                            ) : (
+                                <Typography
+                                    variant="body2"
+                                    onClick={() => handleToggleStatus(todo.id)}
+                                    className={todo.status === "completed" ? classes.todoCompleted : classes.todoNotCompleted}
+                                    style={{ fontFamily: 'Pangolin, cursive' }}
+                                >
+                                    {todo.title}
+                                </Typography>
+                            )}
                         </ListItemText>
                         <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="update" onClick={() => { setEditingId(todo.id); setEditingTitle(todo.title) }}>
+                                <UpdateIcon />
+                            </IconButton>
                             <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteTodo(todo.id)}>
                                 <DeleteIcon />
                             </IconButton>
